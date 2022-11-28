@@ -119,6 +119,7 @@ function playerCheck() {
 
 function clear() {
   addEvents();
+  colorPicker();
   result.innerHTML = "Deal...";
   dealerResult.innerHTML = "";
   winnerResult.innerHTML = "";
