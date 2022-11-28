@@ -4,3 +4,5 @@ https://basic-blackjack.netlify.app/
 
 # blackjackBasic
 blackjackBasic
+
+![blackjack](https://user-images.githubusercontent.com/74496368/204286676-efbdc08c-9e00-4e45-b9af-699bc5251e57.png)
