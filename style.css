@@ -5,47 +5,65 @@ html {
 #apps-container {
   position: relative;
   display: flex;
-  flex-direction: column;
-  width: 300px;
+  flex-direction: row;
+  width: 1280px;
   height: 100%;
   text-align: center;
   font-size: 1.2rem;
   border: 1px solid #1a1a1a;
+  justify-content: space-between;
 }
 
-#apps-container h1 {
+h1 {
   background-color: #1a1a1a;
   color: #f1f1f1;
   padding-bottom: 10px;
+  text-align: center;
 }
 
-#apps-container h2 {
+h2 {
   background-color: #1a1a1a;
   color: #f1f1f1;
+  text-align: center;
 }
 
 #apps-container button {
   position: relative;
-  left: 37px;
-  margin: 5px 0;
+  margin: 35px 10px;
   align-items: center;
   text-align: center;
-  width: 75%;
+  width: 150px;
+  height: 200px;
   border: 1px solid #1a1a1a;
+  padding: 5px 5px;
 }
 
 #dealer {
   position: relative;
+  width: 400px;
+  height: 250px;
   margin: 10px 10px;
   padding: 10px 10px;
   border: 1px solid #1a1a1a;
 }
 
+#dealer span {
+  font-size: 3rem;
+  font-weight: bolder;
+}
+
 #player {
   position: relative;
+  width: 400px;
+  height: 250px;
   margin: 10px 10px;
   padding: 10px 10px;
   border: 1px solid #1a1a1a;
+}
+
+#player span {
+  font-size: 3rem;
+  font-weight: bolder;
 }
 
 .colorPicker {

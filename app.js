@@ -18,6 +18,16 @@ let winnerResult = document.getElementById("winner-result");
 let dealerWindow = document.getElementById("dealer");
 let playerWindow = document.getElementById("player");
 
+playerWindow.style.justifyContent = "center";
+dealerWindow.style.justifyContent = "center";
+
+clear();
+
+dealerWindow.style.backgroundColor = "#f1f1f1";
+dealerWindow.style.color = "#1a1a1a";
+playerWindow.style.backgroundColor = "#f1f1f1";
+playerWindow.style.color = "#1a1a1a";
+
 function addEvents() {
   dealBtn.addEventListener("click", deal);
   standBtn.addEventListener("click", playerStand);
@@ -55,10 +65,20 @@ function winnerCheck() {
     dealerResult.innerHTML = "";
     playerWindow.style.backgroundColor = "yellow";
     dealerWindow.style.backgroundColor = "yellow";
+    playerWindow.style.color = "#1a1a1a";
+    dealerWindow.style.color = "#1a1a1a";
     removeEvents();
+  } else {
+    addEvents();
+    colorPicker();
+    playerWindow.style.backgroundColor = "#f1f1f1";
+    dealerWindow.style.backgroundColor = "#f1f1f1";
+    playerWindow.style.color = "#1a1a1a";
+    dealerWindow.style.color = "#1a1a1a";
   }
   removeEvents();
 }
+winnerCheck();
 
 function dealerCheck() {
   if ( dealerTotal > playerTotal && dealerTotal <= 21 ) {
@@ -97,7 +117,7 @@ function playerCheck() {
     winnerResult.innerHTML = "";
     dealerResult.innerHTML = "";
   } else if (playerTotal === 21) {
-    result.textContent = "BLACKJACK!!!";
+    result.textContent = "BLACKJACK!!! You Win!";
     winnerResult.innerHTML = "";
     dealerResult.innerHTML = "";
     playerWindow.style.backgroundColor = "green";
@@ -106,7 +126,7 @@ function playerCheck() {
     playerWindow.style.color = "white";
     removeEvents();
   } else {
-    result.textContent = "Bust!";
+    result.textContent = "Bust! You Lose!";
     winnerResult.innerHTML = "";
     dealerResult.innerHTML = "";
     dealerWindow.style.backgroundColor = "green";
@@ -123,11 +143,11 @@ function clear() {
   result.innerHTML = "Deal...";
   dealerResult.innerHTML = "";
   winnerResult.innerHTML = "";
-  playerWindow.style.backgroundColor = "#f1f1f1";
   dealerWindow.style.backgroundColor = "#f1f1f1";
-  playerWindow.style.color = "#1a1a1a";
   dealerWindow.style.color = "#1a1a1a";
-}
+  playerWindow.style.backgroundColor = "#f1f1f1";
+  playerWindow.style.color = "#1a1a1a";
+  }
 clear();
 
 function dealer() {
@@ -136,8 +156,6 @@ function dealer() {
   dealerHand.textContent = dealerFirstCard;
   dealerTotal = dealerFirstCard;
   dealerTotalDisplay.innerText = "Total: " + dealerTotal;
-  // playerCheck();
-  // dealerCheck();
 }
 
 function player() {
@@ -147,8 +165,6 @@ function player() {
   playerHand.textContent += " " + playerSecondCard;
   playerTotal = playerFirstCard + playerSecondCard;
   playerTotalDisplay.innerText = "Total: " + playerTotal;
-  // playerCheck();
-  // dealerCheck();
 }
 
 function dealNewCard() {
@@ -157,39 +173,32 @@ function dealNewCard() {
   playerHand.textContent += " - " + newCard;
   playerTotalDisplay.innerText = "Total: " + playerTotal;
   playerCheck();
-  // dealerCheck();
   addEvents();
 }
-hitBtn.addEventListener("click", dealNewCard);
 
 function deal() {
   clear();
   dealer();
   player();
-  // dealerCheck();
   playerCheck();
   addEvents();
 }
-dealBtn.addEventListener("click", deal);
 
 function dealerHit() {
   dealerCheck();
-  // playerCheck();
   if ( dealerTotal <= 17 ) {
     removeEvents();
     newCard = Math.floor(Math.random() * 10) + 2;
     dealerTotal += newCard;
     dealerHand.textContent += " - " + newCard;
     dealerTotalDisplay.innerText = "Total: " + dealerTotal;
-    winnerCheck();
   } else if (dealerTotal >= 17 && dealerTotal <=21) {
     dealerResult.textContent = "Dealer Stands!";
     removeEvents();
     result.innerHTML = "";
     winnerResult.innerHTML = "";
-    winnerCheck();
   } else if (dealerTotal === 21) {
-    dealerResult.textContent = "Dealer BLACKJACK!!!";
+    dealerResult.textContent = "Dealer BLACKJACK!!! You Lose!";
     removeEvents();
     result.innerHTML = "";
     winnerResult.innerHTML = "";
@@ -199,7 +208,7 @@ function dealerHit() {
     playerWindow.style.color = "white";
     winnerCheck();
   } else if (dealerTotal > 21 ) {
-    dealerResult.textContent = "Dealer Bust!";
+    dealerResult.textContent = "Dealer Bust! You Win!";
     removeEvents();
     result.innerHTML = "";
     winnerResult.innerHTML = "";
@@ -207,7 +216,6 @@ function dealerHit() {
     dealerWindow.style.backgroundColor = "red";
     dealerWindow.style.color = "white";
     playerWindow.style.color = "white";
-    winnerCheck();
     removeEvents();
   }
   winnerCheck();
@@ -225,8 +233,9 @@ function playerStand() {
   for ( let i = 0; i < 10; i++) {
     dealerHit();
   }
-  // playerCheck();
   dealerCheck();
+  winnerCheck();
   removeEvents();
 };
 standBtn.addEventListener("click", playerStand);
+clear();
