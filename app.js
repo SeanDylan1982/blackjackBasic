@@ -194,6 +194,10 @@ function dealerHit() {
     dealerTotalDisplay.innerText = "Total: " + dealerTotal;
   } else if (dealerTotal >= 17 && dealerTotal <=21) {
     dealerResult.textContent = "Dealer Stands!";
+    playerWindow.style.backgroundColor = "green";
+    dealerWindow.style.backgroundColor = "red";
+    dealerWindow.style.color = "white";
+    playerWindow.style.color = "white";
     removeEvents();
     result.innerHTML = "";
     winnerResult.innerHTML = "";
@@ -209,13 +213,12 @@ function dealerHit() {
     winnerCheck();
   } else if (dealerTotal > 21 ) {
     dealerResult.textContent = "Dealer Bust! You Win!";
-    removeEvents();
-    result.innerHTML = "";
-    winnerResult.innerHTML = "";
     playerWindow.style.backgroundColor = "green";
     dealerWindow.style.backgroundColor = "red";
     dealerWindow.style.color = "white";
     playerWindow.style.color = "white";
+    result.innerHTML = "";
+    winnerResult.innerHTML = "";
     removeEvents();
   }
   winnerCheck();
