@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = "postgresql://postgres:OBpoweyhCz32Qbvd@db.pdftvqjqwrnwgacmtecc.supabase.co:5432/postgres"
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkZnR2cWpxd3Jud2dhY210ZWNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MzQ2OTAsImV4cCI6MjA2NDExMDY5MH0.OkJjvTFSF1iDbG5tdSiFw34CnPfskZOAcJWtztYQicQ"
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseAnonKey = process.env.PUBLIC_SUPABASE_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables')
