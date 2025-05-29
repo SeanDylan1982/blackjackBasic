@@ -121,18 +121,21 @@ function Game() {
       const newConsecutiveWins = consecutiveWins + 1
       setConsecutiveWins(newConsecutiveWins)
       
-      // Update leaderboard in Supabase
-      const { data, error } = await supabase
-        .from('leaderboard')
-        .upsert([
-          {
-            user_id: user.id,
-            consecutive_wins: newConsecutiveWins,
-            email: user.email
-          }
-        ])
-      
-      if (error) console.error('Error updating leaderboard:', error)
+      try {
+        const { error } = await supabase
+          .from('leaderboard')
+          .upsert([
+            {
+              user_id: user.id,
+              consecutive_wins: newConsecutiveWins,
+              email: user.email
+            }
+          ])
+        
+        if (error) throw error
+      } catch (error) {
+        console.error('Error updating leaderboard:', error.message)
+      }
     } else {
       setConsecutiveWins(0)
     }
