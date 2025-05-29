@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = https://pdftvqjqwrnwgacmtecc.supabase.co
+const supabaseUrl = pdftvqjqwrnwgacmtecc.supabase.co
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
