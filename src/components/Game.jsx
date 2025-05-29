@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 function Game() {
   const [dealerHand, setDealerHand] = useState([])
   const [playerHand, setPlayerHand] = useState([])
-  const [deck, setDeck] = useState([])
+  const [deckId, setDeckId] = useState(null)
   const [gameStatus, setGameStatus] = useState('')
   const [consecutiveWins, setConsecutiveWins] = useState(0)
   const { user, signOut } = useAuth()
@@ -16,30 +16,25 @@ function Game() {
     initializeDeck()
   }, [])
 
-  const initializeDeck = () => {
-    const suits = ['H', 'D', 'C', 'S']
-    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    const newDeck = suits.flatMap(suit => 
-      values.map(value => ({ suit, value }))
-    )
-    setDeck(shuffle(newDeck))
+  const initializeDeck = async () => {
+    try {
+      const response = await fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+      const data = await response.json()
+      setDeckId(data.deck_id)
+    } catch (error) {
+      console.error('Error initializing deck:', error)
+    }
   }
 
-  const shuffle = (array) => {
-    const shuffled = [...array]
-    let currentIndex = shuffled.length
-    
-    while (currentIndex !== 0) {
-      const randomIndex = Math.floor(Math.random() * currentIndex)
-      currentIndex--
-      
-      // Use temporary variable for swapping
-      const temp = shuffled[currentIndex]
-      shuffled[currentIndex] = shuffled[randomIndex]
-      shuffled[randomIndex] = temp
+  const drawCards = async (count) => {
+    try {
+      const response = await fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=${count}`)
+      const data = await response.json()
+      return data.cards
+    } catch (error) {
+      console.error('Error drawing cards:', error)
+      return []
     }
-    
-    return shuffled
   }
 
   const calculateHandValue = (hand) => {
@@ -47,9 +42,9 @@ function Game() {
     let aces = 0
     
     hand.forEach(card => {
-      if (card.value === 'A') {
+      if (card.value === 'ACE') {
         aces += 1
-      } else if (['K', 'Q', 'J'].includes(card.value)) {
+      } else if (['KING', 'QUEEN', 'JACK'].includes(card.value)) {
         value += 10
       } else {
         value += parseInt(card.value)
@@ -67,24 +62,22 @@ function Game() {
     return value
   }
 
-  const dealCard = () => {
-    const newDeck = [...deck]
-    const card = newDeck.pop()
-    setDeck(newDeck)
-    return card
-  }
-
-  const startGame = () => {
-    const playerCards = [dealCard(), dealCard()]
-    const dealerCards = [dealCard()]
+  const startGame = async () => {
+    if (!deckId) {
+      await initializeDeck()
+    }
+    
+    const playerCards = await drawCards(2)
+    const dealerCards = await drawCards(1)
     
     setPlayerHand(playerCards)
     setDealerHand(dealerCards)
     setGameStatus('playing')
   }
 
-  const hit = () => {
-    const newPlayerHand = [...playerHand, dealCard()]
+  const hit = async () => {
+    const newCard = await drawCards(1)
+    const newPlayerHand = [...playerHand, ...newCard]
     setPlayerHand(newPlayerHand)
     
     const value = calculateHandValue(newPlayerHand)
@@ -97,7 +90,8 @@ function Game() {
     let currentDealerHand = [...dealerHand]
     
     while (calculateHandValue(currentDealerHand) < 17) {
-      currentDealerHand.push(dealCard())
+      const newCard = await drawCards(1)
+      currentDealerHand = [...currentDealerHand, ...newCard]
     }
     
     setDealerHand(currentDealerHand)
@@ -172,8 +166,8 @@ function Game() {
           <h2 className="mb-4 text-xl text-white">Dealer's Hand</h2>
           <div className="flex space-x-4">
             {dealerHand.map((card, index) => (
-              <div key={index} className="h-32 w-24 rounded-lg bg-white p-4 text-center">
-                {card.value} {card.suit}
+              <div key={index} className="h-32 w-24 rounded-lg bg-white p-4">
+                <img src={card.image} alt={`${card.value} of ${card.suit}`} className="h-full w-full object-contain" />
               </div>
             ))}
           </div>
@@ -186,8 +180,8 @@ function Game() {
           <h2 className="mb-4 text-xl text-white">Your Hand</h2>
           <div className="flex space-x-4">
             {playerHand.map((card, index) => (
-              <div key={index} className="h-32 w-24 rounded-lg bg-white p-4 text-center">
-                {card.value} {card.suit}
+              <div key={index} className="h-32 w-24 rounded-lg bg-white p-4">
+                <img src={card.image} alt={`${card.value} of ${card.suit}`} className="h-full w-full object-contain" />
               </div>
             ))}
           </div>
