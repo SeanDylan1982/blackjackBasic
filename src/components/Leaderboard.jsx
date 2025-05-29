@@ -66,7 +66,7 @@ function Leaderboard() {
                 Player
               </th>
               <th className="bg-gray-700 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
-                Win Streak
+                Wins
               </th>
             </tr>
           </thead>
