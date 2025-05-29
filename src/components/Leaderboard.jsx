@@ -8,6 +8,25 @@ function Leaderboard() {
 
   useEffect(() => {
     fetchLeaderboard()
+    
+    // Subscribe to realtime updates
+    const subscription = supabase
+      .channel('leaderboard_changes')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'leaderboard' 
+        }, 
+        () => {
+          fetchLeaderboard()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   const fetchLeaderboard = async () => {
@@ -27,7 +46,7 @@ function Leaderboard() {
   return (
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="mb-8 flex justify-between">
-        <h1 className="text-4xl font-bold text-white">Leaderboard</h1>
+        <h1 className="text-4xl font-bold text-white">Top 10 Win Streaks</h1>
         <button
           onClick={() => navigate('/game')}
           className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
@@ -47,13 +66,13 @@ function Leaderboard() {
                 Player
               </th>
               <th className="bg-gray-700 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
-                Consecutive Wins
+                Win Streak
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">
             {leaders.map((leader, index) => (
-              <tr key={leader.user_id}>
+              <tr key={leader.user_id} className={index === 0 ? 'bg-yellow-900 bg-opacity-20' : ''}>
                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-300">
                   {index + 1}
                 </td>

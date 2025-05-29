@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 
 function Game() {
   const [dealerHand, setDealerHand] = useState([])
+  const [dealerHiddenCard, setDealerHiddenCard] = useState(null)
   const [playerHand, setPlayerHand] = useState([])
   const [deckId, setDeckId] = useState(null)
   const [gameStatus, setGameStatus] = useState('')
@@ -68,10 +69,11 @@ function Game() {
     }
     
     const playerCards = await drawCards(2)
-    const dealerCards = await drawCards(1)
+    const dealerCards = await drawCards(2)
     
     setPlayerHand(playerCards)
-    setDealerHand(dealerCards)
+    setDealerHand([dealerCards[0]])
+    setDealerHiddenCard(dealerCards[1])
     setGameStatus('playing')
   }
 
@@ -87,17 +89,22 @@ function Game() {
   }
 
   const stand = async () => {
-    let currentDealerHand = [...dealerHand]
+    // Reveal dealer's hidden card
+    const currentDealerHand = [...dealerHand, dealerHiddenCard]
+    setDealerHand(currentDealerHand)
+    setDealerHiddenCard(null)
     
-    while (calculateHandValue(currentDealerHand) < 17) {
+    let finalDealerHand = [...currentDealerHand]
+    
+    while (calculateHandValue(finalDealerHand) < 17) {
       const newCard = await drawCards(1)
-      currentDealerHand = [...currentDealerHand, ...newCard]
+      finalDealerHand = [...finalDealerHand, ...newCard]
     }
     
-    setDealerHand(currentDealerHand)
+    setDealerHand(finalDealerHand)
     
     const playerValue = calculateHandValue(playerHand)
-    const dealerValue = calculateHandValue(currentDealerHand)
+    const dealerValue = calculateHandValue(finalDealerHand)
     
     if (dealerValue > 21 || playerValue > dealerValue) {
       endGame('player')
@@ -124,7 +131,10 @@ function Game() {
               consecutive_wins: newConsecutiveWins,
               email: user.email
             }
-          ])
+          ], {
+            onConflict: 'user_id',
+            returning: 'minimal'
+          })
         
         if (error) throw error
       } catch (error) {
@@ -170,9 +180,14 @@ function Game() {
                 <img src={card.image} alt={`${card.value} of ${card.suit}`} className="h-full w-full object-contain" />
               </div>
             ))}
+            {dealerHiddenCard && (
+              <div className="h-32 w-24 rounded-lg bg-white p-4">
+                <img src="https://deckofcardsapi.com/static/img/back.png" alt="Card back" className="h-full w-full object-contain" />
+              </div>
+            )}
           </div>
           <p className="mt-2 text-white">
-            Total: {gameStatus === 'playing' ? '?' : calculateHandValue(dealerHand)}
+            Total: {dealerHiddenCard ? calculateHandValue(dealerHand) + ' + ?' : calculateHandValue(dealerHand)}
           </p>
         </div>
 
